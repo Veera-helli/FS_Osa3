@@ -84,7 +84,7 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   };
 
-  persons = persons.concat(person);
+  persons = [...persons, person];
 
   response.json(person);
 });
