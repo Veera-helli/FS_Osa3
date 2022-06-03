@@ -65,9 +65,8 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 const generateId = () => {
-  min = Math.ceil(5);
-  max = Math.floor(200);
-  return Math.floor(Math.random() * (max - min) + min);
+  const nextid = Math.max(...persons.map((p) => p.id)) + 1;
+  return nextid;
 };
 
 app.post("/api/persons", (request, response) => {
