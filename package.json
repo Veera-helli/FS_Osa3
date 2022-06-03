@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf build && cd ~/FS_open/Osa2/puhelinluettelo && npm run build && cp -R build FS_Osa3",
     "dev": "nodemon index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
