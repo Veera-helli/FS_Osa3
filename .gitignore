@@ -8,6 +8,7 @@
 # testing
 /coverage
 
+# dev
 /build
 
 # misc
