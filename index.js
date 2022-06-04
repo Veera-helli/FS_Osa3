@@ -15,6 +15,10 @@ app.use(
 const cors = require("cors");
 app.use(cors());
 
+require("dotenv").config();
+
+const Person = require("./models/persons");
+
 let persons = [
   {
     id: 1,
@@ -44,31 +48,39 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  Person.find({}).then((person) => {
+    res.json(person);
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((person) => person.id === id);
-
-  if (person) {
+  Person.findById(Number(request.params.id)).then((person) => {
     response.json(person);
-  } else {
-    response.status(404).end();
-  }
+  });
+  // const id = Number(request.params.id);
+  // const person = persons.find((person) => person.id === id);
+
+  // if (person) {
+  //   response.json(person);
+  // } else {
+  //   response.status(404).end();
+  // }
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== id);
+  Person.deleteOne(Number(request.params.id)).then((person) => {
+    response.status(204).end();
+  });
+  // const id = Number(request.params.id);
+  // persons = persons.filter((person) => person.id !== id);
 
-  response.status(204).end();
+  // response.status(204).end();
 });
 
-const generateId = () => {
-  const nextid = Math.max(...persons.map((p) => p.id)) + 1;
-  return nextid;
-};
+// const generateId = () => {
+//   const nextid = Math.max(...persons.map((p) => p.id)) + 1;
+//   return nextid;
+// };
 
 app.post("/api/persons", (request, response) => {
   const body = request.body;
@@ -83,21 +95,30 @@ app.post("/api/persons", (request, response) => {
       error: "number missing",
     });
   }
-  if (persons.map((p) => p.name).includes(body.name)) {
-    return response.status(400).json({
-      error: "name must be unique",
-    });
-  }
+  // if (persons.map((p) => p.name).includes(body.name)) {
+  //   return response.status(400).json({
+  //     error: "name must be unique",
+  //   });
+  // }
 
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = [...persons, person];
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 
-  response.json(person);
+  // const person = {
+  //   id: generateId(),
+  //   name: body.name,
+  //   number: body.number,
+  // };
+
+  // persons = [...persons, person];
+
+  // response.json(person);
 });
 
 const unknownEndpoint = (request, response) => {
