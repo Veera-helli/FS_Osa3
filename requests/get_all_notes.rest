@@ -1,8 +1,8 @@
 
-GET http://localhost:3001/api/persons
-# content-type: application/json
+POST http://localhost:3001/api/persons
+content-type: application/json
 
-# {
-#     "name": "Mervi Hellas",
-#     "number": "0408974456"
-# }
+{
+    "name": "Arttu Hellas",
+    "number": "0408973456"
+}
