@@ -70,13 +70,12 @@ app.put("/api/persons/:id", (request, response, next) => {
   const { name, number } = request.body;
 
   const person = {
-    name: body.name,
-    number: body.number,
+    name: name,
+    number: number,
   };
 
   Person.findByIdAndUpdate(
     request.params.id,
-    person,
     { name, number },
     { new: true, runValidators: true, context: "query" }
   )
