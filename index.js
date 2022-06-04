@@ -40,8 +40,10 @@ let persons = [
 ];
 
 app.get("/info", (req, res) => {
-  message = `Phonebook has info for ${persons.length} people.  ${new Date()}`;
-  res.send(message);
+  Person.countDocuments({}, function (err, count) {
+    const message = `Phonebook has info for ${count} people.  ${new Date()}`;
+    res.send(message);
+  });
 });
 
 app.get("/api/persons", (req, res) => {
