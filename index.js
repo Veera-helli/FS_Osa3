@@ -1,6 +1,10 @@
 const express = require("express");
-const morgan = require("morgan");
 const app = express();
+const cors = require("cors");
+require("dotenv").config();
+const morgan = require("morgan");
+
+const Person = require("./models/persons");
 
 app.use(express.json());
 app.use(express.static("build"));
@@ -12,12 +16,16 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :json")
 );
 
-const cors = require("cors");
 app.use(cors());
 
-require("dotenv").config();
-
-const Person = require("./models/persons");
+const requestLogger = (request, response, next) => {
+  console.log("RL Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+app.use(requestLogger);
 
 let persons = [
   {
@@ -48,13 +56,13 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  Person.find({}).then((person) => {
-    res.json(person);
+  Person.find({}).then((persons) => {
+    res.json(persons);
   });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  Person.findById(Number(request.params.id)).then((person) => {
+  Person.findById(request.params.id).then((person) => {
     response.json(person);
   });
   // const id = Number(request.params.id);
@@ -68,13 +76,13 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  Person.deleteOne(Number(request.params.id)).then((person) => {
-    response.status(204).end();
-  });
-  // const id = Number(request.params.id);
-  // persons = persons.filter((person) => person.id !== id);
+  // Person.deleteOne(Number(request.params.id)).then((person) => {
+  //   response.status(204).end();
+  // });
+  const id = Number(request.params.id);
+  persons = persons.filter((person) => person.id !== id);
 
-  // response.status(204).end();
+  response.status(204).end();
 });
 
 // const generateId = () => {
